@@ -9,7 +9,7 @@ docker compose up
 Create the plugin zip file
 
 ```shell
-zip -r assignmentbutton.zip assignmentbutton/
+zip -r showmyai.zip showmyai/
 ```
 
 Navigate to Moodle in browser and login

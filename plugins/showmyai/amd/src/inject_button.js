@@ -1,7 +1,7 @@
 define(['jquery'], function($) {
     return {
         init: function() {
-            console.log('Assignment button plugin loaded');
+            console.log('ShowMyAI plugin loaded');
             
             $(document).ready(function() {
                 // Find the assignment intro section
@@ -12,7 +12,7 @@ define(['jquery'], function($) {
                     var button = $('<button>')
                         .addClass('btn btn-primary')
                         .css('margin-top', '10px')
-                        .text('Open Custom Tool')
+                        .text('Open ShowMyAI Custom Tool')
                         .on('click', function() {
                             var assignmentId = getAssignmentId();
                             // Later: window.open('https://your-saas.com?assignment=' + assignmentId, '_blank');

@@ -58,12 +58,18 @@ services:
       PRE_CONFIGURE_COMMANDS: |
         echo 'This is a pre-configure command'
       POST_CONFIGURE_COMMANDS: |
-        echo 'This is a post-configure command'
+        echo 'Setting up custom plugin...'
+        if [ -d "/var/www/html/local/assignmentbutton" ]; then
+          chown -R nobody:nobody /var/www/html/local/assignmentbutton
+          chmod -R 755 /var/www/html/local/assignmentbutton
+          echo 'Plugin permissions fixed'
+        fi
     ports:
       - 80:8080
     volumes:
       - moodledata:/var/www/moodledata
       - moodlehtml:/var/www/html
+      - ./local/assignmentbutton:/var/www/html/local/assignmentbutton 
     depends_on:
       - postgres
       - redis

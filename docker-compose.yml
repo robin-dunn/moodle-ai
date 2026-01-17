@@ -58,17 +58,14 @@ services:
       PRE_CONFIGURE_COMMANDS: |
         echo 'This is a pre-configure command'
       POST_CONFIGURE_COMMANDS: |
-        echo 'Setting up custom plugin...'
         if [ -d "/var/www/html/local/showmyai" ]; then
           chown -R nobody:nobody /var/www/html/local/showmyai
           chmod -R 755 /var/www/html/local/showmyai
-          echo 'Plugin permissions fixed'
+          php /var/www/html/admin/cli/upgrade.php --non-interactive
         fi
     ports:
       - 80:8080
     volumes:
-      - moodledata:/var/www/moodledata
-      - moodlehtml:/var/www/html
       - ./plugins/showmyai:/var/www/html/local/showmyai 
     depends_on:
       - postgres

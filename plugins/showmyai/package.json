@@ -1,0 +1,26 @@
+{
+  "name": "moodle-local-showmyai",
+  "version": "1.0.0",
+  "description": "ShowMyAI Moodle Plugin - AMD module build configuration",
+  "main": "amd/build/inject_button.min.js",
+  "scripts": {
+    "build": "grunt amd",
+    "watch": "grunt watch",
+    "build:all": "grunt all"
+  },
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-uglify": "^5.0.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-cli": "^1.4.3"
+  },
+  "keywords": [
+    "moodle",
+    "plugin",
+    "amd",
+    "build",
+    "grunt"
+  ],
+  "author": "",
+  "license": "GPL-3.0"
+}

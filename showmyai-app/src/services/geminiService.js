@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 class GeminiService {
   constructor() {
     this.client = null;
-    this.model = process.env.GEMINI_MODEL || 'gemini-pro';
+    this.model = process.env.GEMINI_MODEL || 'gemini-1.5-flash-latest';
     this.temperature = parseFloat(process.env.GEMINI_TEMPERATURE || '0.7');
     this.maxTokens = parseInt(process.env.GEMINI_MAX_TOKENS || '1000');
   }
@@ -73,6 +73,8 @@ class GeminiService {
 
       if (error.message.includes('API key')) {
         throw new Error('Invalid Gemini API key');
+      } else if (error.message.includes('not found') || error.message.includes('404')) {
+        throw new Error(`Gemini model "${this.model}" not found. Try: gemini-1.5-flash or gemini-1.5-pro`);
       } else if (error.message.includes('quota') || error.message.includes('rate')) {
         throw new Error('Gemini rate limit exceeded. Please try again later.');
       } else if (error.status >= 500) {

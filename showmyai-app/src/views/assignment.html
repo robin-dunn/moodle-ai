@@ -18,9 +18,29 @@
             background: #f5f7fa;
         }
 
+        .app-header {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 100;
+        }
+
+        .app-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
         .app-container {
             display: flex;
-            height: 100vh;
+            height: calc(100vh - 68px);
             width: 100%;
         }
 
@@ -28,29 +48,30 @@
         .left-panel {
             width: 30%;
             background: white;
-            border-right: 1px solid #e1e8ed;
+            border-right: 2px solid #cbd6e0;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
         }
 
         .panel-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
+            background: white;
+            color: #14171a;
+            padding: 1rem 1.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 10;
+            border-bottom: 1px solid #e1e8ed;
         }
 
         .panel-header h2 {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .panel-header .subtitle {
-            font-size: 0.875rem;
-            opacity: 0.9;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+            color: #14171a;
         }
 
         .panel-content {
@@ -179,23 +200,27 @@
         .right-panel {
             width: 30%;
             background: white;
-            border-left: 1px solid #e1e8ed;
+            border-left: 2px solid #cbd6e0;
             display: flex;
             flex-direction: column;
         }
 
         .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
+            background: white;
+            color: #14171a;
+            padding: 1rem 1.5rem;
+            height: 60px;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border-bottom: 1px solid #e1e8ed;
         }
 
         .chat-header h2 {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
+            font-weight: 600;
             flex: 1;
+            color: #14171a;
         }
 
         .chat-messages {
@@ -358,12 +383,14 @@
     </style>
 </head>
 <body>
+    <header class="app-header">
+        <h1>Show My AI Demo App</h1>
+    </header>
     <div class="app-container">
         <!-- Left Panel: Assignment Details -->
         <div class="left-panel">
             <div class="panel-header">
                 <h2>📋 Assignment Details</h2>
-                <p class="subtitle">Moodle Assignment #{{assignmentId}}</p>
             </div>
             <div class="panel-content">
                 <div class="info-section">
@@ -417,18 +444,13 @@
                         <span class="info-value">Coming soon</span>
                     </div>
                 </div>
-
-                <p style="color: #8899a6; font-size: 0.875rem; margin-top: 2rem; line-height: 1.5;">
-                    <strong>Note:</strong> Assignment data from Moodle will be fetched and displayed here in a future update.
-                </p>
             </div>
         </div>
 
         <!-- Center Panel: Rich Text Editor -->
         <div class="center-panel">
             <div class="panel-header">
-                <h2>✏️ Your Work</h2>
-                <p class="subtitle">Compose your assignment response</p>
+                <h2>✏️ Your Notes</h2>
             </div>
             <div class="editor-toolbar">
                 <button class="toolbar-btn" onclick="formatDoc('bold')" title="Bold"><strong>B</strong></button>

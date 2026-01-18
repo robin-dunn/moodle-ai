@@ -1,5 +1,6 @@
 const openaiService = require('./openaiService');
 const geminiService = require('./geminiService');
+const ollamaService = require('./ollamaService');
 
 class AIService {
   constructor() {
@@ -11,8 +12,8 @@ class AIService {
   }
 
   setProvider(provider) {
-    if (provider !== 'openai' && provider !== 'gemini') {
-      throw new Error('Invalid AI provider. Must be "openai" or "gemini"');
+    if (provider !== 'openai' && provider !== 'gemini' && provider !== 'ollama') {
+      throw new Error('Invalid AI provider. Must be "openai", "gemini", or "ollama"');
     }
     this.provider = provider;
   }
@@ -22,6 +23,8 @@ class AIService {
       return openaiService.isInitialized();
     } else if (this.provider === 'gemini') {
       return geminiService.isInitialized();
+    } else if (this.provider === 'ollama') {
+      return ollamaService.isInitialized();
     }
     return false;
   }
@@ -31,6 +34,8 @@ class AIService {
       yield* openaiService.streamChatWithRetry(conversationHistory);
     } else if (this.provider === 'gemini') {
       yield* geminiService.streamChatWithRetry(conversationHistory);
+    } else if (this.provider === 'ollama') {
+      yield* ollamaService.streamChatWithRetry(conversationHistory);
     } else {
       throw new Error(`Unknown AI provider: ${this.provider}`);
     }
@@ -46,6 +51,11 @@ class AIService {
       return {
         provider: 'Google Gemini',
         model: process.env.GEMINI_MODEL || 'gemini-pro'
+      };
+    } else if (this.provider === 'ollama') {
+      return {
+        provider: 'Ollama (Local)',
+        model: process.env.OLLAMA_MODEL || 'phi3'
       };
     }
     return { provider: 'Unknown', model: 'Unknown' };

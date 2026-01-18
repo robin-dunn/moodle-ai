@@ -71,6 +71,14 @@ services:
       - postgres
       - redis
 
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - 11434:11434
+
   showmyai:
     build:
       context: ./showmyai-app
@@ -79,9 +87,11 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - AI_PROVIDER=${AI_PROVIDER:-gemini}
+      - AI_PROVIDER=${AI_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-phi3}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-pro}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash-latest}
       - GEMINI_TEMPERATURE=${GEMINI_TEMPERATURE:-0.7}
       - GEMINI_MAX_TOKENS=${GEMINI_MAX_TOKENS:-1000}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -92,8 +102,10 @@ services:
       - 3000:3000
     depends_on:
       - moodle
+      - ollama
 
 volumes:
   postgres: null
   moodledata: null
   moodlehtml: null
+  ollama: null

@@ -31,8 +31,10 @@ echo "Creating distribution package..."
 # Remove old zip if it exists
 rm -f "$OUTPUT_ZIP"
 
-# Create zip excluding development files
-zip -r "$OUTPUT_ZIP" "$PLUGIN_DIR" \
+# Create zip with correct structure for Moodle
+# The zip should have showmyai/* at the root, not plugins/showmyai/*
+cd plugins
+zip -r "../$OUTPUT_ZIP" showmyai \
   -x "*/node_modules/*" \
   -x "*/.git/*" \
   -x "*/package-lock.json" \
@@ -42,6 +44,7 @@ zip -r "$OUTPUT_ZIP" "$PLUGIN_DIR" \
   -x "*/.idea/*" \
   -x "*.swp" \
   -x "*.swo"
+cd ..
 
 echo ""
 echo "Build complete! Plugin is ready to use."
@@ -49,6 +52,11 @@ echo ""
 echo "Distribution package created: $OUTPUT_ZIP"
 echo "File size: $(du -h "$OUTPUT_ZIP" | cut -f1)"
 echo ""
-echo "You can now:"
+echo "To install in Moodle:"
+echo "  1. Go to Site administration > Plugins > Install plugins"
+echo "  2. Upload $OUTPUT_ZIP"
+echo "  3. Select plugin type: 'Local plugins (local)'"
+echo "  4. Click 'Install plugin from the ZIP file'"
+echo ""
+echo "Or for local development:"
 echo "  - Run: docker compose up"
-echo "  - Or upload $OUTPUT_ZIP to another Moodle instance"

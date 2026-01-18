@@ -8,6 +8,7 @@ const chatRoutes = require('./routes/chat');
 const { chatRateLimiter } = require('./middleware/rateLimit');
 const openaiService = require('./services/openaiService');
 const geminiService = require('./services/geminiService');
+const ollamaService = require('./services/ollamaService');
 const aiService = require('./services/aiService');
 const sessionManager = require('./services/sessionManager');
 
@@ -15,54 +16,83 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize AI services
-let aiInitialized = false;
+async function initializeAIServices() {
+  let aiInitialized = false;
 
-// Try to initialize Gemini (default provider)
-if (process.env.GEMINI_API_KEY) {
+  // Try to initialize Ollama (local LLM)
   try {
-    geminiService.initialize(process.env.GEMINI_API_KEY);
-    console.log('Gemini service initialized successfully');
-    aiService.setProvider('gemini');
-    aiInitialized = true;
-  } catch (error) {
-    console.error('Failed to initialize Gemini service:', error.message);
-  }
-}
-
-// Try to initialize OpenAI (fallback or alternative)
-if (process.env.OPENAI_API_KEY) {
-  try {
-    openaiService.initialize(process.env.OPENAI_API_KEY);
-    console.log('OpenAI service initialized successfully');
-    // Only set OpenAI as provider if Gemini wasn't initialized
-    if (!aiInitialized) {
-      aiService.setProvider('openai');
+    await ollamaService.initialize();
+    if (ollamaService.isInitialized()) {
+      console.log('Ollama service initialized successfully');
       aiInitialized = true;
     }
   } catch (error) {
-    console.error('Failed to initialize OpenAI service:', error.message);
+    console.error('Failed to initialize Ollama service:', error.message);
+  }
+
+  // Try to initialize Gemini
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      geminiService.initialize(process.env.GEMINI_API_KEY);
+      console.log('Gemini service initialized successfully');
+      if (!aiInitialized) {
+        aiInitialized = true;
+      }
+    } catch (error) {
+      console.error('Failed to initialize Gemini service:', error.message);
+    }
+  }
+
+  // Try to initialize OpenAI
+  if (process.env.OPENAI_API_KEY) {
+    try {
+      openaiService.initialize(process.env.OPENAI_API_KEY);
+      console.log('OpenAI service initialized successfully');
+      if (!aiInitialized) {
+        aiInitialized = true;
+      }
+    } catch (error) {
+      console.error('Failed to initialize OpenAI service:', error.message);
+    }
+  }
+
+  // Set provider based on AI_PROVIDER environment variable or auto-detect
+  if (process.env.AI_PROVIDER) {
+    const preferredProvider = process.env.AI_PROVIDER.toLowerCase();
+    if (preferredProvider === 'ollama' && ollamaService.isInitialized()) {
+      aiService.setProvider('ollama');
+      console.log('Using Ollama as AI provider (from AI_PROVIDER setting)');
+    } else if (preferredProvider === 'openai' && openaiService.isInitialized()) {
+      aiService.setProvider('openai');
+      console.log('Using OpenAI as AI provider (from AI_PROVIDER setting)');
+    } else if (preferredProvider === 'gemini' && geminiService.isInitialized()) {
+      aiService.setProvider('gemini');
+      console.log('Using Gemini as AI provider (from AI_PROVIDER setting)');
+    }
+  } else {
+    // Auto-detect: prefer Ollama, then Gemini, then OpenAI
+    if (ollamaService.isInitialized()) {
+      aiService.setProvider('ollama');
+    } else if (geminiService.isInitialized()) {
+      aiService.setProvider('gemini');
+    } else if (openaiService.isInitialized()) {
+      aiService.setProvider('openai');
+    }
+  }
+
+  if (!aiInitialized) {
+    console.warn('No AI service available. Chat features will not be available.');
+    console.warn('Make sure Ollama is running, or set GEMINI_API_KEY or OPENAI_API_KEY.');
+  } else {
+    const modelInfo = aiService.getModelInfo();
+    console.log(`Active AI Provider: ${modelInfo.provider} (${modelInfo.model})`);
   }
 }
 
-// Check if we have a specific provider preference
-if (process.env.AI_PROVIDER) {
-  const preferredProvider = process.env.AI_PROVIDER.toLowerCase();
-  if (preferredProvider === 'openai' && openaiService.isInitialized()) {
-    aiService.setProvider('openai');
-    console.log('Using OpenAI as AI provider (from AI_PROVIDER setting)');
-  } else if (preferredProvider === 'gemini' && geminiService.isInitialized()) {
-    aiService.setProvider('gemini');
-    console.log('Using Gemini as AI provider (from AI_PROVIDER setting)');
-  }
-}
-
-if (!aiInitialized) {
-  console.warn('No AI API key set. Chat features will not be available.');
-  console.warn('Set either GEMINI_API_KEY or OPENAI_API_KEY to enable chat.');
-} else {
-  const modelInfo = aiService.getModelInfo();
-  console.log(`Active AI Provider: ${modelInfo.provider} (${modelInfo.model})`);
-}
+// Initialize AI services on startup
+initializeAIServices().catch(err => {
+  console.error('Error during AI service initialization:', err);
+});
 
 app.use(helmet({
   contentSecurityPolicy: false,

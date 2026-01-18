@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Show My AI - Assignment Details</title>
+    <title>Show My AI - Assignment {{assignmentId}}</title>
     <style>
         * {
             margin: 0;
@@ -13,229 +13,624 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 800px;
-            width: 100%;
+            height: 100vh;
             overflow: hidden;
+            background: #f5f7fa;
         }
 
-        .header {
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Left Panel - Assignment Details */
+        .left-panel {
+            width: 30%;
+            background: white;
+            border-right: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header .subtitle {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-
-        .content {
-            padding: 2rem;
-        }
-
-        .info-card {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
             padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .panel-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .panel-header .subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .panel-content {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .info-section {
             margin-bottom: 1.5rem;
-            border-radius: 8px;
         }
 
-        .info-card h2 {
-            color: #333;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
+        .info-section h3 {
+            font-size: 0.875rem;
+            color: #8899a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
         }
 
-        .info-card h2::before {
-            content: '📋';
-            margin-right: 0.5rem;
-            font-size: 1.5rem;
-        }
-
-        .info-row {
+        .info-item {
             display: flex;
             justify-content: space-between;
             padding: 0.75rem 0;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid #f5f7fa;
         }
 
-        .info-row:last-child {
+        .info-item:last-child {
             border-bottom: none;
         }
 
         .info-label {
             font-weight: 600;
-            color: #666;
+            color: #657786;
+            font-size: 0.875rem;
         }
 
         .info-value {
-            color: #333;
+            color: #14171a;
             font-weight: 500;
+            font-size: 0.875rem;
         }
 
         .badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            background: #667eea;
-            color: white;
-        }
-
-        .alert {
-            background: #e7f3ff;
-            border-left: 4px solid #2196f3;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: 8px;
-            color: #014361;
-        }
-
-        .alert::before {
-            content: 'ℹ️ ';
-            margin-right: 0.5rem;
-        }
-
-        .actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .btn-primary:hover {
+        /* Center Panel - Rich Text Editor */
+        .center-panel {
+            width: 40%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-toolbar {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #14171a;
+        }
+
+        .toolbar-btn:hover {
+            background: #f5f7fa;
+            border-color: #667eea;
+        }
+
+        .toolbar-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .editor-container {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .rich-editor {
+            min-height: 100%;
+            outline: none;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #14171a;
+        }
+
+        .rich-editor:empty:before {
+            content: attr(data-placeholder);
+            color: #8899a6;
+        }
+
+        .rich-editor h1, .rich-editor h2, .rich-editor h3 {
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .rich-editor p {
+            margin-bottom: 1rem;
+        }
+
+        .rich-editor ul, .rich-editor ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Right Panel - AI Chat */
+        .right-panel {
+            width: 30%;
+            background: white;
+            border-left: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-header h2 {
+            font-size: 1.25rem;
+            flex: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #f8f9fa;
+        }
+
+        .chat-message {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.assistant {
+            background: white;
+            color: #14171a;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-message.streaming::after {
+            content: '▋';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .chat-status {
+            text-align: center;
+            color: #8899a6;
+            font-size: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        .chat-error {
+            background: #fee;
+            color: #c33;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid #e1e8ed;
+            background: white;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        #chat-input:focus {
+            border-color: #667eea;
+        }
+
+        #send-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+        }
+
+        #send-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #333;
-            border: 2px solid #e9ecef;
+        #send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .btn-secondary:hover {
-            background: #e9ecef;
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 1rem 2rem;
-            text-align: center;
-            color: #666;
-            font-size: 0.875rem;
-        }
-
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.5rem;
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .left-panel {
+                width: 25%;
             }
-
-            .content {
-                padding: 1rem;
+            .center-panel {
+                width: 50%;
             }
+            .right-panel {
+                width: 25%;
+            }
+        }
 
-            .actions {
+        @media (max-width: 768px) {
+            .app-container {
                 flex-direction: column;
             }
-
-            .info-row {
-                flex-direction: column;
-                gap: 0.5rem;
+            .left-panel, .center-panel, .right-panel {
+                width: 100%;
             }
+            .left-panel {
+                max-height: 30vh;
+            }
+            .right-panel {
+                min-height: 40vh;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f7fa;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd6e0;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8899a6;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 Show My AI</h1>
-            <p class="subtitle">Assignment Details & AI Analysis</p>
-        </div>
-
-        <div class="content">
-            <div class="alert">
-                This is a demonstration page showing assignment details from your Moodle installation.
+    <div class="app-container">
+        <!-- Left Panel: Assignment Details -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h2>📋 Assignment Details</h2>
+                <p class="subtitle">Moodle Assignment #{{assignmentId}}</p>
             </div>
+            <div class="panel-content">
+                <div class="info-section">
+                    <h3>Basic Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Assignment ID:</span>
+                        <span class="info-value"><span class="badge">{{assignmentId}}</span></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value">Active</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Loaded:</span>
+                        <span class="info-value">{{timestamp}}</span>
+                    </div>
+                </div>
 
-            <div class="info-card">
-                <h2>Assignment Information</h2>
-                <div class="info-row">
-                    <span class="info-label">Assignment ID:</span>
-                    <span class="info-value"><span class="badge">{{assignmentId}}</span></span>
+                <div class="info-section">
+                    <h3>Assignment Data</h3>
+                    <div class="info-item">
+                        <span class="info-label">Title:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Due Date:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Course:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Points:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Status:</span>
-                    <span class="info-value">Active</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Loaded at:</span>
-                    <span class="info-value">{{timestamp}}</span>
-                </div>
-            </div>
 
-            <div class="info-card">
-                <h2>AI Features</h2>
-                <p style="color: #666; line-height: 1.6;">
-                    This is a placeholder for AI-powered features. Future enhancements will include:
+                <div class="info-section">
+                    <h3>Submission Info</h3>
+                    <div class="info-item">
+                        <span class="info-label">Type:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Attempts:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Grade:</span>
+                        <span class="info-value">Coming soon</span>
+                    </div>
+                </div>
+
+                <p style="color: #8899a6; font-size: 0.875rem; margin-top: 2rem; line-height: 1.5;">
+                    <strong>Note:</strong> Assignment data from Moodle will be fetched and displayed here in a future update.
                 </p>
-                <ul style="margin-top: 1rem; margin-left: 1.5rem; color: #666; line-height: 1.8;">
-                    <li>Assignment analysis and feedback suggestions</li>
-                    <li>Student submission insights</li>
-                    <li>Grading assistance</li>
-                    <li>Plagiarism detection</li>
-                    <li>Learning analytics</li>
-                </ul>
-            </div>
-
-            <div class="actions">
-                <a href="javascript:history.back()" class="btn btn-secondary">← Back to Moodle</a>
-                <a href="/health" class="btn btn-primary">Check Service Status</a>
             </div>
         </div>
 
-        <div class="footer">
-            Show My AI v1.0.0 | Connected to Moodle
+        <!-- Center Panel: Rich Text Editor -->
+        <div class="center-panel">
+            <div class="panel-header">
+                <h2>✏️ Your Work</h2>
+                <p class="subtitle">Compose your assignment response</p>
+            </div>
+            <div class="editor-toolbar">
+                <button class="toolbar-btn" onclick="formatDoc('bold')" title="Bold"><strong>B</strong></button>
+                <button class="toolbar-btn" onclick="formatDoc('italic')" title="Italic"><em>I</em></button>
+                <button class="toolbar-btn" onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
+                <button class="toolbar-btn" onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                <button class="toolbar-btn" onclick="formatDoc('insertOrderedList')" title="Numbered List">1. List</button>
+                <button class="toolbar-btn" onclick="formatDoc('formatBlock', 'h1')" title="Heading 1">H1</button>
+                <button class="toolbar-btn" onclick="formatDoc('formatBlock', 'h2')" title="Heading 2">H2</button>
+                <button class="toolbar-btn" onclick="formatDoc('formatBlock', 'p')" title="Paragraph">¶</button>
+            </div>
+            <div class="editor-container">
+                <div id="editor" class="rich-editor" contenteditable="true" data-placeholder="Start typing your assignment here..."></div>
+            </div>
+        </div>
+
+        <!-- Right Panel: AI Chat -->
+        <div class="right-panel">
+            <div class="chat-header">
+                <span>💬</span>
+                <h2>AI Assistant</h2>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <div class="chat-status">Start a conversation with your AI assistant!</div>
+            </div>
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Ask about this assignment..." maxlength="500">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Rich Text Editor Functions
+        function formatDoc(cmd, value = null) {
+            document.execCommand(cmd, false, value);
+            document.getElementById('editor').focus();
+        }
+
+        // Save editor content to localStorage
+        const editor = document.getElementById('editor');
+        editor.addEventListener('input', () => {
+            localStorage.setItem('editorContent', editor.innerHTML);
+        });
+
+        // Load saved content
+        const savedContent = localStorage.getItem('editorContent');
+        if (savedContent) {
+            editor.innerHTML = savedContent;
+        }
+
+        // Chat Widget JavaScript
+        class ChatWidget {
+            constructor() {
+                this.messages = document.getElementById('chat-messages');
+                this.input = document.getElementById('chat-input');
+                this.sendBtn = document.getElementById('send-btn');
+
+                this.sessionId = sessionStorage.getItem('chatSessionId') || null;
+                this.isStreaming = false;
+
+                this.init();
+            }
+
+            init() {
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !this.isStreaming) {
+                        this.sendMessage();
+                    }
+                });
+
+                if (!this.sessionId) {
+                    this.createSession();
+                }
+            }
+
+            async createSession() {
+                try {
+                    const response = await fetch('/api/chat/session', {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.sessionId = data.sessionId;
+                        sessionStorage.setItem('chatSessionId', this.sessionId);
+                        console.log('Session created:', this.sessionId);
+                    }
+                } catch (error) {
+                    console.error('Failed to create session:', error);
+                }
+            }
+
+            async sendMessage() {
+                const message = this.input.value.trim();
+
+                if (!message || this.isStreaming) {
+                    return;
+                }
+
+                this.input.value = '';
+                this.addMessage('user', message);
+                this.setStreaming(true);
+
+                const assistantMsgDiv = document.createElement('div');
+                assistantMsgDiv.className = 'chat-message assistant streaming';
+                this.messages.appendChild(assistantMsgDiv);
+                this.scrollToBottom();
+
+                try {
+                    const response = await fetch('/api/chat/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            sessionId: this.sessionId
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+                    let fullText = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop();
+
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = JSON.parse(line.substring(6));
+
+                                if (data.type === 'session' && data.sessionId) {
+                                    this.sessionId = data.sessionId;
+                                    sessionStorage.setItem('chatSessionId', data.sessionId);
+                                } else if (data.type === 'error') {
+                                    this.showError(data.error);
+                                    assistantMsgDiv.remove();
+                                } else if (data.token) {
+                                    fullText += data.token;
+                                    assistantMsgDiv.textContent = fullText;
+                                    this.scrollToBottom();
+                                } else if (data.done) {
+                                    assistantMsgDiv.classList.remove('streaming');
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showError('Failed to get response. Please try again.');
+                    assistantMsgDiv.remove();
+                } finally {
+                    this.setStreaming(false);
+                }
+            }
+
+            addMessage(role, content) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `chat-message ${role}`;
+                msgDiv.textContent = content;
+                this.messages.appendChild(msgDiv);
+                this.scrollToBottom();
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'chat-error';
+                errorDiv.textContent = message;
+                this.messages.appendChild(errorDiv);
+                this.scrollToBottom();
+            }
+
+            setStreaming(streaming) {
+                this.isStreaming = streaming;
+                this.sendBtn.disabled = streaming;
+                this.input.disabled = streaming;
+            }
+
+            scrollToBottom() {
+                this.messages.scrollTop = this.messages.scrollHeight;
+            }
+        }
+
+        // Initialize chat widget when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatWidget();
+        });
+    </script>
 </body>
 </html>

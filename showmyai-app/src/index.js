@@ -4,9 +4,65 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const assignmentRoutes = require('./routes/assignments');
+const chatRoutes = require('./routes/chat');
+const { chatRateLimiter } = require('./middleware/rateLimit');
+const openaiService = require('./services/openaiService');
+const geminiService = require('./services/geminiService');
+const aiService = require('./services/aiService');
+const sessionManager = require('./services/sessionManager');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize AI services
+let aiInitialized = false;
+
+// Try to initialize Gemini (default provider)
+if (process.env.GEMINI_API_KEY) {
+  try {
+    geminiService.initialize(process.env.GEMINI_API_KEY);
+    console.log('Gemini service initialized successfully');
+    aiService.setProvider('gemini');
+    aiInitialized = true;
+  } catch (error) {
+    console.error('Failed to initialize Gemini service:', error.message);
+  }
+}
+
+// Try to initialize OpenAI (fallback or alternative)
+if (process.env.OPENAI_API_KEY) {
+  try {
+    openaiService.initialize(process.env.OPENAI_API_KEY);
+    console.log('OpenAI service initialized successfully');
+    // Only set OpenAI as provider if Gemini wasn't initialized
+    if (!aiInitialized) {
+      aiService.setProvider('openai');
+      aiInitialized = true;
+    }
+  } catch (error) {
+    console.error('Failed to initialize OpenAI service:', error.message);
+  }
+}
+
+// Check if we have a specific provider preference
+if (process.env.AI_PROVIDER) {
+  const preferredProvider = process.env.AI_PROVIDER.toLowerCase();
+  if (preferredProvider === 'openai' && openaiService.isInitialized()) {
+    aiService.setProvider('openai');
+    console.log('Using OpenAI as AI provider (from AI_PROVIDER setting)');
+  } else if (preferredProvider === 'gemini' && geminiService.isInitialized()) {
+    aiService.setProvider('gemini');
+    console.log('Using Gemini as AI provider (from AI_PROVIDER setting)');
+  }
+}
+
+if (!aiInitialized) {
+  console.warn('No AI API key set. Chat features will not be available.');
+  console.warn('Set either GEMINI_API_KEY or OPENAI_API_KEY to enable chat.');
+} else {
+  const modelInfo = aiService.getModelInfo();
+  console.log(`Active AI Provider: ${modelInfo.provider} (${modelInfo.model})`);
+}
 
 app.use(helmet({
   contentSecurityPolicy: false,
@@ -28,6 +84,12 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/', assignmentRoutes);
+
+app.use('/api/chat', chatRateLimiter, chatRoutes);
+
+setInterval(() => {
+  sessionManager.cleanupOldSessions();
+}, 3600000); // Run cleanup every hour
 
 app.use((req, res) => {
   res.status(404).send(`

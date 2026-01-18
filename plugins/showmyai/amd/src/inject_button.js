@@ -15,9 +15,8 @@ define(['jquery'], function($) {
                         .text('Open ShowMyAI Custom Tool')
                         .on('click', function() {
                             var assignmentId = getAssignmentId();
-                            // Later: window.open('https://your-saas.com?assignment=' + assignmentId, '_blank');
                             console.log('Button clicked! Assignment ID: ' + assignmentId);
-                            window.open('https://www.google.com');
+                            window.open('http://localhost:3000/assignment?id=' + assignmentId);
                         });
                     
                     // Insert button after intro

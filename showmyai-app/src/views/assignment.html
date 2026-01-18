@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show My AI - Assignment Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .info-card h2 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-card h2::before {
+            content: '📋';
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: #667eea;
+            color: white;
+        }
+
+        .alert {
+            background: #e7f3ff;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            color: #014361;
+        }
+
+        .alert::before {
+            content: 'ℹ️ ';
+            margin-right: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Show My AI</h1>
+            <p class="subtitle">Assignment Details & AI Analysis</p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                This is a demonstration page showing assignment details from your Moodle installation.
+            </div>
+
+            <div class="info-card">
+                <h2>Assignment Information</h2>
+                <div class="info-row">
+                    <span class="info-label">Assignment ID:</span>
+                    <span class="info-value"><span class="badge">{{assignmentId}}</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">Active</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Loaded at:</span>
+                    <span class="info-value">{{timestamp}}</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>AI Features</h2>
+                <p style="color: #666; line-height: 1.6;">
+                    This is a placeholder for AI-powered features. Future enhancements will include:
+                </p>
+                <ul style="margin-top: 1rem; margin-left: 1.5rem; color: #666; line-height: 1.8;">
+                    <li>Assignment analysis and feedback suggestions</li>
+                    <li>Student submission insights</li>
+                    <li>Grading assistance</li>
+                    <li>Plagiarism detection</li>
+                    <li>Learning analytics</li>
+                </ul>
+            </div>
+
+            <div class="actions">
+                <a href="javascript:history.back()" class="btn btn-secondary">← Back to Moodle</a>
+                <a href="/health" class="btn btn-primary">Check Service Status</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            Show My AI v1.0.0 | Connected to Moodle
+        </div>
+    </div>
+</body>
+</html>

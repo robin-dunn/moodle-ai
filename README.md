@@ -2,6 +2,14 @@
 
 This repository demonstrates a custom Moodle plugin called **ShowMyAI** that adds a button to assignment pages so that clicking the button will navigate to the ShowMyAI mock web app.
 
+Screenshot showing the "Show My AI" button injected onto a Moodle assignment page:
+
+![ShowMyAI Plugin on Assignment Page](screenshot_assignment_plugin.png)
+
+Screenshot showing the mock Show My AI Web app which is opened in a new tab after clicking the plugin button:
+
+![ShowMyAI mock Web app](screenshot_showmyai_app.png)
+
 ## Prerequisites
 
 - Docker and Docker Compose to run a local Moodle instance
@@ -34,7 +42,7 @@ cd ../..
 
 ### 2. Start Moodle
 
-Start Moodle using Docker Compose command below.  
+Start Moodle using Docker Compose command below.
 
 This may take a few minutes on the first run as Moodle takes a while to initialise the database.
 
@@ -42,7 +50,21 @@ This may take a few minutes on the first run as Moodle takes a while to initiali
 docker compose up
 ```
 
-### 3. Access Moodle
+### 3. Download Ollama Model
+
+For local AI testing, the Ollama service needs to download the phi3 model. After the services are running, execute the following command:
+
+```shell
+docker exec -it alpine-moodle-ollama-1 ollama pull phi3
+```
+
+This will download the phi3 model to the Ollama service. The model is stored in a Docker volume and only needs to be downloaded once.
+
+**Note:** The container name may vary depending on your Docker Compose version. You can check the exact name with `docker ps` and look for the ollama container.
+
+**Alternative models:** To use a different model, pull it with `ollama pull <model-name>` and update the `OLLAMA_MODEL` environment variable in `docker-compose.yml`.
+
+### 4. Access Moodle
 
 Navigate to Moodle in your browser at `http://localhost`
 
@@ -51,7 +73,7 @@ Login with the credentials configured in `docker-compose.yml`:
 - Username: `moodleuser`
 - Password: `PLEASE_CHANGEME`
 
-### 4. Manually Install Plugin
+### 5. Manually Install Plugin
 
 After logging into Moodle navigate to the plugin installation page:
 

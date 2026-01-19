@@ -58,15 +58,9 @@ services:
       PRE_CONFIGURE_COMMANDS: |
         echo 'This is a pre-configure command'
       POST_CONFIGURE_COMMANDS: |
-        if [ -d "/var/www/html/local/showmyai" ]; then
-          chown -R nobody:nobody /var/www/html/local/showmyai
-          chmod -R 755 /var/www/html/local/showmyai
-          php /var/www/html/admin/cli/upgrade.php --non-interactive
-        fi
+        echo 'This is a post-configure command'
     ports:
       - 80:8080
-    volumes:
-      - ./plugins/showmyai:/var/www/html/local/showmyai 
     depends_on:
       - postgres
       - redis
